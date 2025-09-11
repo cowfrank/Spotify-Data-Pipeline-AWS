@@ -32,12 +32,39 @@ When your variables are set. Go to line 22 in the code and change playlist_link 
 Now repeat this exact process for <a href="https://github.com/Grifynn/Spotify-Data-Pipeline-AWS/blob/main/spotify_api_data_extract.py](https://github.com/On-car/spotify-end-to-end-data-engineering--project/blob/main/spotify_transformation_load_function.py)" >spotify_transformation_load_function.py</a>. The only thing you need to do differently is create a new Environment Variable for "S3_BUCKET_TRANSFORM" <br>
 ### 3. Glue Crawler
 Head over to the Glue Console. On the left-hand side, Find Data Catalog -> Databases. In here, clicked "Add Database" and name it spotify_db <br><br>
-Once your database is named, now create a table and follow the instructions. <br> <br>
-##### 1. Name - Set the folder name to "transform"
-##### 2. Database - Select the Database you just created
-##### 3. Datastore - Select S3 and for Include path: Browse to your S3 Transform folder
-##### 4. Data Format - Select JSON
-##### 5. Review & Create - Click Create Button
+![S3 Folder](images/Glue.PNG) <br>
+Once your database is named, now create a table and follow the instructions.  <br> <br>
+##### 1. Add Table
+##### 2. Name - Set the folder name to "transform"
+##### 3. Database - Select the Database you just created
+##### 4. Datastore - Select S3 and for Include path: Browse to your S3 Transform folder <br>
+![S3 Folder](images/Glue%20Path.PNG) <br>
+##### 5. Data Format - Select JSON
+##### 6. Review & Create - Click Create Button <br>
+### Glue Crawler
+Follow these steps to create a glue cralwer
+##### 1. Go to Data Catalog -> Crawlers -> Create Crawler
+##### 2. Name your Crawler spotify_crawler
+##### 3. Add a data source -> S3 Path: Put your S3 Transform folder
+##### 4. Subsequent Crawler Runs: Crawl all-subfolders -> Add an S3 Data Source
+##### 5. Create new IAM Role -> AWSGlueSerivceRole-S3Access -> View -> Follow steps below on IAM Permissions and add AmazonS3FullAccess
+##### 6. Choose a Database -> spotify_db
+##### 7. Review and Create 
+### IAM Permissions
+Now, to tie everything together, you need to allocate permissions to each AWS Function 
+<br><br>
+#### Starting With Lambda
+<br>
+Go over to your spotify_extrator function and head into the configurations tab. In there go to permissions and you'll find "Role Name" under Execution Role. Click on the link. You'll be transferred over to the IAM page, where you need to create a user. Once you have done that, go to back to the role name and click it again. <br> <br>
+
+![S3 Folder](images/IAM%20Lambda%20Role.PNG) <br>
+
+Click on the "Add Permissions" --> Attach Policies. Search up "AmazonS3FullAccess" and click add "Add permissions" <br> <br>
+![S3 Folder](images/IAM%20S3%20Permission.PNG)
+##### Now it should look like this:
+![S3 Folder](images/IAM%20Lamba%20Permission.PNG) <br> 
+Now repeat the exact process for your other Lambda Function <br> <br>
+#### Glue
 
 
 
