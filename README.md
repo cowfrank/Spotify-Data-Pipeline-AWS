@@ -6,4 +6,18 @@ On this project, we expect to Extract, Transform, and Analyze data with AWS Serv
 ### 1. S3 Buckets
 First, you want to create S3 Buckets within Amazon Web Services. Let's start with the names. Create two buckets named "spotify-raw-(yourname)" and "spotify-transformed-(yourname). After this is completed, in each bucket, create folders in each respective bucket named "to_processed" in the raw bucket and "transformed" in the transform bucket. 
 #### It should look like this 
- ![Image Alt]([image_url](https://github.com/Grifynn/Spotify-Data-Pipeline-AWS/blob/main/images/S3%20Buckets.PNG))
+![S3 Buckets](images/S3%20Buckets.PNG)
+![S3 Folder](images/S3%20Folder.PNG)
+### 2. Lambda/Python
+In this step, create two Lambda Functions named "spotify-extractor" and "spotify_transformer".
+#### Function names
+![S3 Folder](images/S3%20Folder.PNG)
+Once this is complete, let's go into the spotify_extractor function. Input <a href="https://github.com/Grifynn/Spotify-Data-Pipeline-AWS/blob/main/spotify_api_data_extract.py" > spotify_api_data_extract.py</a> into the code source.<br> <br>
+Scroll down to "Runtime settings" and change the "Handler" to spotify_api_data_extract.lambda_handler. ( Exact name of py file before lambda_handler)
+#### Handler
+![S3 Folder](images/S3%20Folder.PNG)<br> <br>
+Then you want to set the Environment Variables <br> <br>
+To do this, you go here
+![S3 Folder](images/S3%20Folder.PNG) <br>
+der
+
