@@ -11,13 +11,23 @@ First, you want to create S3 Buckets within Amazon Web Services. Let's start wit
 ### 2. Lambda/Python
 In this step, create two Lambda Functions named "spotify-extractor" and "spotify_transformer".
 #### Function names
-![S3 Folder](images/S3%20Folder.PNG)
+![S3 Folder](images/Lambda%20Function.PNG)
 Once this is complete, let's go into the spotify_extractor function. Input <a href="https://github.com/Grifynn/Spotify-Data-Pipeline-AWS/blob/main/spotify_api_data_extract.py" > spotify_api_data_extract.py</a> into the code source.<br> <br>
 Scroll down to "Runtime settings" and change the "Handler" to spotify_api_data_extract.lambda_handler. ( Exact name of py file before lambda_handler)
 #### Handler
-![S3 Folder](images/S3%20Folder.PNG)<br> <br>
-Then you want to set the Environment Variables <br> <br>
-To do this, you go here
-![S3 Folder](images/S3%20Folder.PNG) <br>
-der
+![S3 Folder](images/Runtime%20Settings.PNG)<br> <br>
+Then you want to set the Environment Variables. You have 3 you want to input<br> <br>
+S3_BUCKET_RAW = (Your Raw S3 Bucket) eg. spotify-raw-frank<br><br>
+SPOTIFY_CLIENT_ID <br>
+SPOTIFY_CLIENT_SECRET <br>
+##### I'LL SHOW YOU HOW TO OBTAINS THESE BELOW!<br>
+#### Environment Variables (Bottom Left)
+![S3 Folder](images/Environment%20Variables.PNG) <br><br>
+#### Obtain Spotify Keys
+Head over to https://developer.spotify.com/ and sign in with your regular Spotify account. Head over to the dashboard and find your keys. <br> <br>
+![S3 Folder](images/Runtime%20Settings.PNG) 
+<br>
+Once you have obtained them, input them into your Environmental Keys. <br> <br>
+Now repeat this exact process for <a href="https://github.com/Grifynn/Spotify-Data-Pipeline-AWS/blob/main/spotify_api_data_extract.py](https://github.com/On-car/spotify-end-to-end-data-engineering--project/blob/main/spotify_transformation_load_function.py)" >spotify_transformation_load_function.py</a>
+
 
