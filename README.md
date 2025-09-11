@@ -28,7 +28,9 @@ Head over to https://developer.spotify.com/ and sign in with your regular Spotif
 ![S3 Folder](images/Runtime%20Settings.PNG) 
 <br>
 Once you have obtained them, input them into your Environmental Keys (SPOTIFY_CLIENT_ID: SPOTIFY_CLIENT_SECRET:). <br> <br>
-When your variables are set. Go to line 22 in the code and change playlist_link to whatever playlist you would like to see (Make sure you deploy to save your changes)<br> <br>
+When your variables are set. Go to line 22 in the code and change playlist_link to whatever playlist you would like to see (Make sure you deploy to save your changes)<br>
+![S3 Folder](images/LambdaTest.PNG) <br>
+ <br>
 Now repeat this exact process for <a href="https://github.com/Grifynn/Spotify-Data-Pipeline-AWS/blob/main/spotify_api_data_extract.py](https://github.com/On-car/spotify-end-to-end-data-engineering--project/blob/main/spotify_transformation_load_function.py)" >spotify_transformation_load_function.py</a>. The only thing you need to do differently is create a new Environment Variable for "S3_BUCKET_TRANSFORM" <br>
 ### 3. Glue Crawler
 Head over to the Glue Console. On the left-hand side, Find Data Catalog -> Databases. In here, clicked "Add Database" and name it spotify_db <br><br>
@@ -71,24 +73,28 @@ Now repeat the exact process for your other Lambda Function <br> <br>
 
 ### 5. Obtain Data
 
-##### 1. Go to Lambda -> spotify_extractor -> Code -> Test
+##### 1. Go to Lambda -> spotify_extractor -> Code -> Test<br>
+##### Test is in the middle left <br>
+![S3 Folder](images/LambdaTest.PNG)<br>
 ##### 2. Go to spotify_transform -> Code -> Test
 ##### 3. Go to Glue -> Data Catalog -> Crawlers -> Select spotify_crawler -> Run and Wait
+![S3 Folder](images/GlueRun.PNG)<br>
 ##### 4. Once done: Data Catalog -> Databases -> spotify_db -> transformed to the right hit Table Data
+![S3 Folder](images/GlueTableData.PNG)<br>
 ##### 5. You should get redirected to Athena: Run this query: <br>
 CREATE EXTERNAL TABLE IF NOT EXISTS spotify_db.spotify_tracks (
-  `track_id` string,
-  `track_name` string,
-  `artist` string,
-  `album` string,
-  `release_date` string,
-  `added_at` string,
-  `popularity` string
-)
-ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
-WITH SERDEPROPERTIES ('ignore.malformed.json' = 'true')
-LOCATION 's3://spotify-transformed-frank/transformed/'
-TBLPROPERTIES ('classification' = 'json');
+  `track_id` string,<br>
+  `track_name` string,<br>
+  `artist` string,<br>
+  `album` string,<br>
+  `release_date` string,<br>
+  `added_at` string,<br>
+  `popularity` string<br>
+)<br>
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'<br>
+WITH SERDEPROPERTIES ('ignore.malformed.json' = 'true')<br>
+LOCATION 's3://spotify-transformed-frank/transformed/'<br>
+TBLPROPERTIES ('classification' = 'json');<br>
 <br>
 #### Format to look like this <br>
 ![S3 Folder](images/AthenaCreateTable.PNG)
@@ -97,6 +103,9 @@ TBLPROPERTIES ('classification' = 'json');
 ##### 6. Now, in a different query window, you can run something like this and play around with the SQL <br>
 SELECT artist, track_name, album, popularity FROM "AwsDataCatalog"."spotify_db"."spotify_tracks" limit 30;
 ![S3 Folder](images/AthenaSQL.PNG)
+
+### Conclusion
+Now you have a fully functional pipeline of data from API -> S3 Bucket -> Glue -> Athena. This is a relatively simple project you can do to pick up AWS services. This platform allows you to do amazing things, including automation from the first Lambda Function to the input into the Glue Database. All of these Services can be monitored by CloudWatch, where you can see the logs of each service. Here, you can break down certain things that go wrong and troubleshoot each log.
 
 
 
