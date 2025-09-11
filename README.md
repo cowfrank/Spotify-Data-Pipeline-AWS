@@ -33,14 +33,14 @@ Remove-Item -Recurse -Force package2 -ErrorAction SilentlyContinue<br>
 py -m pip install -t package2 spotipy requests<br>
 #### 3. Moves <a href="https://github.com/Grifynn/Spotify-Data-Pipeline-AWS/blob/main/spotify_transform_load_function.py" > spotify_transform_load_function.py</a> into "Package2"
 Copy-Item spotify_transform_load_function.py package\<br>
-#### 4. Extracts all the files in "Package" and turns them into a ZIP
+#### 4. Extracts all the files in "Package2" and turns them into a ZIP
 Compress-Archive -Path package2\* -DestinationPath transform.zip -Force<br> <br>
 ## Lambda/Python Pt. 2
 In this step, head over to the Lambda Console and create two Lambda Functions named "spotify-extractor" and "spotify_transformer".
 #### Function names
-![S3 Folder](images/Lambda%20Function.PNG)
+![S3 Folder](images/Lambda%20Function.PNG)<br> <br>
 Once this is complete, let's go into the spotify_extractor function. Upload your new "extractor.zip" into the code source <br> <br>
-![S3 Folder](images/LambdaUpload.PNG)
+![S3 Folder](images/LambdaUpload.PNG) <br> <br>
 Scroll down to "Runtime settings" and change the "Handler" to spotify_api_data_extract.lambda_handler. ( Exact name of py file before .lambda_handler)
 #### Handler
 ![S3 Folder](images/Runtime%20Settings.PNG)<br> <br>
@@ -52,11 +52,10 @@ Then you want to set the Environment Variables. You have 3 you want to input:<br
 #### Environment Variables (Bottom Left)
 ![S3 Folder](images/Environment%20Variables.PNG) <br>
 #### Obtain Spotify Keys
-Head over to https://developer.spotify.com/ and sign in with your regular Spotify account. Head over to the dashboard and find your keys. <br> <br>
-![S3 Folder](images/Runtime%20Settings.PNG) 
+Head over to https://developer.spotify.com/ and sign in with your regular Spotify account. Head over to the dashboard and find your keys.
 <br>
 Once you have obtained them, input them into your Environmental Keys (SPOTIFY_CLIENT_ID: SPOTIFY_CLIENT_SECRET:). <br> <br>
-When your variables are set. Go to line 22 in the code and change playlist_link to whatever playlist you would like to see (Make sure you deploy to save your changes)<br>
+When your variables are inputted. Go to line 22 in the code and change playlist_link to whatever playlist you would like to see (Make sure you deploy to save your changes)<br> <br>
 ![S3 Folder](images/LambdaTest.PNG) <br>
  <br>
 Now repeat this exact process for <a href="https://github.com/Grifynn/Spotify-Data-Pipeline-AWS/blob/main/spotify_api_data_extract.py](https://github.com/On-car/spotify-end-to-end-data-engineering--project/blob/main/spotify_transformation_load_function.py)" >spotify_transformation_load_function.py</a>. The only thing you need to do differently is create a new Environment Variable for "S3_BUCKET_TRANSFORM" <br>
