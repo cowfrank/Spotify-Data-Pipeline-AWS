@@ -1,4 +1,4 @@
-<img width="1840" height="334" alt="image" src="https://github.com/user-attachments/assets/cc05cce2-f5af-4b0b-99a9-b7ed63ee25a9" /># Spotify-Data-Pipeline-AWS
+# Spotify-Data-Pipeline-AWS
 Python, AWS (S3, Lambda, Glue, and Athena), and PowerShell 
 ## Overview
 On this project, we expect to Extract, Transform, and Analyze data with AWS Services and Spotify's API. Using Python/Lambda, we take Spotify's API and extract raw data into S3 buckets. In another Lambda function, we transform that data into an organized manner that allows AWS Glue to read each category and separate them into different Schemas. Lastly, we use Athena to create a database that allows us to query/sort the data
@@ -22,7 +22,7 @@ Then you want to set the Environment Variables. You have 3 you want to input:<br
 #### SPOTIFY_CLIENT_ID:------ <br>
 #### SPOTIFY_CLIENT_SECRET:------ <br>
 #### Environment Variables (Bottom Left)
-![S3 Folder](images/Environment%20Variables.PNG) <br><br>
+![S3 Folder](images/Environment%20Variables.PNG) <br>
 #### Obtain Spotify Keys
 Head over to https://developer.spotify.com/ and sign in with your regular Spotify account. Head over to the dashboard and find your keys. <br> <br>
 ![S3 Folder](images/Runtime%20Settings.PNG) 
@@ -33,7 +33,7 @@ Now repeat this exact process for <a href="https://github.com/Grifynn/Spotify-Da
 ### 3. Glue Crawler
 Head over to the Glue Console. On the left-hand side, Find Data Catalog -> Databases. In here, clicked "Add Database" and name it spotify_db <br><br>
 ![S3 Folder](images/Glue.PNG) <br>
-Once your database is named, now create a table and follow the instructions.  <br> <br>
+Once your database is named, now create a table and follow the instructions.  <br> 
 ##### 1. Add Table
 ##### 2. Name - Set the folder name to "transform"
 ##### 3. Database - Select the Database you just created
@@ -42,17 +42,21 @@ Once your database is named, now create a table and follow the instructions.  <b
 ##### 5. Data Format - Select JSON
 ##### 6. Review & Create - Click Create Button <br>
 ### Glue Crawler
-Follow these steps to create a glue cralwer
+Follow these steps to create a Glue Crawler
 ##### 1. Go to Data Catalog -> Crawlers -> Create Crawler
 ##### 2. Name your Crawler spotify_crawler
 ##### 3. Add a data source -> S3 Path: Put your S3 Transform folder
+![S3 Folder](images/Glue%20Path.PNG) <br> 
 ##### 4. Subsequent Crawler Runs: Crawl all-subfolders -> Add an S3 Data Source
-##### 5. Create new IAM Role -> AWSGlueSerivceRole-S3Access -> View -> Follow steps below on IAM Permissions and add AmazonS3FullAccess
+##### 5. Follow steps below on 5. IAM Permissions: Create new IAM Role -> AWSGlueSerivceRole-S3Access -> View -> Add AmazonS3FullAccess
 ##### 6. Choose a Database -> spotify_db
 ##### 7. Review and Create 
-### IAM Permissions
+<br>
+
+### 4. IAM Permissions
+
 Now, to tie everything together, you need to allocate permissions to each AWS Function 
-<br><br>
+<br>
 #### Starting With Lambda
 <br>
 Go over to your spotify_extrator function and head into the configurations tab. In there go to permissions and you'll find "Role Name" under Execution Role. Click on the link. You'll be transferred over to the IAM page, where you need to create a user. Once you have done that, go to back to the role name and click it again. <br> <br>
@@ -64,7 +68,36 @@ Click on the "Add Permissions" --> Attach Policies. Search up "AmazonS3FullAcces
 ##### Now it should look like this:
 ![S3 Folder](images/IAM%20Lamba%20Permission.PNG) <br> 
 Now repeat the exact process for your other Lambda Function <br> <br>
-#### Glue
+
+### 5. Obtain Data
+
+##### 1. Go to Lambda -> spotify_extractor -> Code -> Test
+##### 2. Go to spotify_transform -> Code -> Test
+##### 3. Go to Glue -> Data Catalog -> Crawlers -> Select spotify_crawler -> Run and Wait
+##### 4. Once done: Data Catalog -> Databases -> spotify_db -> transformed to the right hit Table Data
+##### 5. You should get redirected to Athena: Run this query: <br>
+CREATE EXTERNAL TABLE IF NOT EXISTS spotify_db.spotify_tracks (
+  `track_id` string,
+  `track_name` string,
+  `artist` string,
+  `album` string,
+  `release_date` string,
+  `added_at` string,
+  `popularity` string
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES ('ignore.malformed.json' = 'true')
+LOCATION 's3://spotify-transformed-frank/transformed/'
+TBLPROPERTIES ('classification' = 'json');
+<br>
+#### Format to look like this <br>
+![S3 Folder](images/AthenaCreateTable.PNG)
+<br>
+
+##### 6. Now, in a different query window, you can run something like this and play around with the SQL <br>
+SELECT artist, track_name, album, popularity FROM "AwsDataCatalog"."spotify_db"."spotify_tracks" limit 30;
+![S3 Folder](images/AthenaSQL.PNG)
+
 
 
 
